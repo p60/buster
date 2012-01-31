@@ -7,6 +7,7 @@ module Buster
     def fire(name, props = {})
       bin = MessagePack.pack(props)
       sender.send_strings([name.to_s, bin])
+      sender.close
     end
 
     private
