@@ -7,13 +7,14 @@ module Buster
     def fire(name, props = {})
       bin = MessagePack.pack(props)
       sender.send_strings([name.to_s, bin])
-      sender.close
     end
 
     private
 
     def sender
-      s = @context.socket(ZMQ::DEALER)
+      return Thread.current['sender_socket'] if Thread.current['sender_socket']
+
+      s = Thread.current['sender_socket'] = @context.socket(ZMQ::DEALER)
       s.connect("inproc://routes")
       s
     end
